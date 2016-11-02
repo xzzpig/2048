@@ -6,20 +6,21 @@ import java.util.Random;
 
 public class Chest {
 	public enum SIDE {
-		UP,LEFT,DOWN,RIGHT, ;
+		UP, LEFT, DOWN, RIGHT,;
 	}
 
 	private static Chest instance;
 
 	private static final Random random = new Random();
-	
+
 	public static Chest getInstance() {
-		if(instance==null) new Chest();
+		if (instance == null)
+			new Chest();
 		return instance;
 	}
 
 	public final int size;
-	
+
 	private int socre;
 
 	private int[][] data;
@@ -38,11 +39,11 @@ public class Chest {
 	private int[][] addData(int[][] data_add) {
 		int[][] ret = copyData(data_add);
 		List<Integer[]> empty = getEmptyLoc(ret);
-		if(empty.size()==0)
+		if (empty.size() == 0)
 			return ret;
 		Integer[] loc = empty.get(random.nextInt(empty.size()));
-		int a = (random.nextInt(2)+1)*2;
-		ret[loc[0]][loc[1]]=a;
+		int a = (random.nextInt(2) + 1) * 2;
+		ret[loc[0]][loc[1]] = a;
 		return ret;
 	}
 
@@ -67,7 +68,7 @@ public class Chest {
 		return copy;
 	}
 
-	public int[][] getData(){
+	public int[][] getData() {
 		return data;
 	}
 
@@ -77,10 +78,12 @@ public class Chest {
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				for (int y = j - 1; y >= 0; y--) {
+					if (ret[i][y] != 0 && ret[i][j] != ret[i][y])
+						break;
 					if (ret[i][j] == ret[i][y]) {
 						ret[i][j] = 0;
 						ret[i][y] *= 2;
-						socre+=ret[i][y];
+						socre += ret[i][y];
 						break;
 					}
 				}
@@ -90,14 +93,16 @@ public class Chest {
 			ret = rotate(4 - side.ordinal(), ret);
 		return ret;
 	}
-	
+
 	private boolean canmerge(SIDE side, int[][] data_merge) {
 		int[][] ret = data_merge;
 		ret = rotate(side.ordinal(), ret);
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				for (int y = j - 1; y >= 0; y--) {
-					if (ret[i][j] == ret[i][y]&&ret[i][j]!=0) {
+					if (ret[i][y] != 0 && ret[i][j] != ret[i][y])
+						break;
+					if (ret[i][j] == ret[i][y] && ret[i][j] != 0) {
 						return true;
 					}
 				}
@@ -128,7 +133,7 @@ public class Chest {
 			ret = rotate(4 - side.ordinal(), ret);
 		return ret;
 	}
-	
+
 	private int[][] rotate(int times, int[][] data_r) {
 		int[][] ret = copyData(data_r);
 		for (int i = 0; i < times; i++) {
@@ -136,7 +141,7 @@ public class Chest {
 		}
 		return ret;
 	}
-	
+
 	private int[][] rotate(int[][] data_r) {
 		int[][] old = copyData(data_r), ret = new int[size][size];
 		for (int i = 0; i < size; i++) {
@@ -146,29 +151,34 @@ public class Chest {
 		}
 		return ret;
 	}
-	
-	private List<Integer[]> getEmptyLoc(int[][] data_e){
+
+	private List<Integer[]> getEmptyLoc(int[][] data_e) {
 		List<Integer[]> ret = new ArrayList<Integer[]>();
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				if(data_e[i][j]==0)
-					ret.add(new Integer[]{i,j});
+				if (data_e[i][j] == 0)
+					ret.add(new Integer[] { i, j });
 			}
 		}
 		return ret;
 	}
-	
-	public boolean isGameOver(){
-		if(getEmptyLoc(data).size()!=0) return false;
-		//printData(move(SIDE.UP,data));
-		if(canmerge(SIDE.UP, data)) return false;
-		if(canmerge(SIDE.DOWN, data)) return false;
-		if(canmerge(SIDE.LEFT, data)) return false;
-		if(canmerge(SIDE.RIGHT, data)) return false;
+
+	public boolean isGameOver() {
+		if (getEmptyLoc(data).size() != 0)
+			return false;
+		// printData(move(SIDE.UP,data));
+		if (canmerge(SIDE.UP, data))
+			return false;
+		if (canmerge(SIDE.DOWN, data))
+			return false;
+		if (canmerge(SIDE.LEFT, data))
+			return false;
+		if (canmerge(SIDE.RIGHT, data))
+			return false;
 		return true;
 	}
-	
-	public int getScore(){
+
+	public int getScore() {
 		return socre;
 	}
 }
