@@ -112,7 +112,7 @@ public class Chest {
 	}
 
 	public void move(SIDE side) {
-		data = addData(addData(move(side, clear2048(merge(side, data)))));
+		data = (addData(move(side, clear2048(merge(side, data)))));
 	}
 
 	private int[][] move(SIDE side, int[][] data_move) {
